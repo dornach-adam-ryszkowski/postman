@@ -1,0 +1,1578 @@
+{
+	"info": {
+		"_postman_id": "5b72278d-5296-481e-8d2a-9dbd5516d810",
+		"name": "TCR",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "CS1 Create subscription Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"const json = pm.response.json();\r",
+							"\r",
+							"pm.environment.set(\"Sub_Id\", json.id);\r",
+							"\r",
+							"pm.test(\"Chek id\", function () {\r",
+							"    pm.expect(json.id).is.not.null;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Chek createdAt\", function () {\r",
+							"    pm.expect(json.createdAt).is.not.null;\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"id": "56e99db9-2655-4e06-b0a8-6467061a9dee"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let aplikacja = pm.variables.replaceIn(\"{{$randomLoremWord}}\")\r",
+							"\r",
+							"pm.environment.set(\"Appli\", aplikacja)"
+						],
+						"type": "text/javascript",
+						"id": "cfb7b858-8cd8-4eef-af71-88aac4a7ca89"
+					}
+				}
+			],
+			"id": "06345342-73c1-48a7-b6ca-e72433140da9",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{TMS_PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{TMS_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"application\":\"{{Appli}}\",\r\n  \"shipment\": {\r\n  \t\"internalNumber\": \"{{$randomBankAccount}}\",\r\n  \t\"branch\": \"{{$randomCreditCardMask}}\",\r\n  \t\"shipmentType\": \"FCL\",\r\n  \t\"masterBillOfLading\": \"MBL1\",\r\n  \t\"bookingNumber\": \"BN2\",\r\n  \t\"containers\": [{\r\n  \t\t\"containerNumber\": \"C1\"\r\n  \t\t},\r\n  \t\t{\r\n  \t\t\"containerNumber\": \"C2\"\r\n  \t\t},\r\n  \t\t{\r\n  \t\t\"containerNumber\": \"C3\"\r\n  \t\t}\t\r\n  \t],\r\n  \t\"oceanCarrier\": {\r\n  \t\t\"code\": \"OCC1\",\r\n  \t\t\"scac\": \"EGLV\",\r\n  \t\t\"reference\": \"OCR1\"\r\n  \t},\r\n  \t\"oceanPorts\": {\r\n  \t\t\"portOfLoading\" : \"POL1\",\r\n  \t\t\"portOfDischarge\": \"POD2\"\r\n  \t\t\r\n  \t},\r\n  \t\"principal\": {\r\n  \t\t\"number\": \"PN1\", \r\n  \t\t\"reference\": \"PR1\"\r\n  \t}\r\n  },\r\n  \"subscription\": {\r\n  \t\"externalSources\": [\r\n        {\r\n            \"key\": \"b_id\",\r\n            \"value\": \"{{$randomUUID}}\",\r\n            \"name\": \"OceanInsightsAPI\"\r\n        }\r\n  \t]\r\n  }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/shipment-visibility/api/v1/subscriptions",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"shipment-visibility",
+						"api",
+						"v1",
+						"subscriptions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CS2 Get one subscription Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d716aee4-28d5-4d44-8791-bea3c9d1be14",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"let app = pm.environment.get(\"Appli\");\r",
+							"\r",
+							"pm.test(\"Chek application value\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.application).to.eql(app);\r",
+							"});\r",
+							"\r",
+							"let json = pm.response.json();\r",
+							"\r",
+							"pm.environment.set(\"internalNumber\", json.shipment.internalNumber);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "0d893d65-2705-43f2-80d7-d66eb8fe90a0",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{TMS_PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{TMS_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/shipment-visibility/api/v1/subscriptions/{{Sub_Id}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"shipment-visibility",
+						"api",
+						"v1",
+						"subscriptions",
+						"{{Sub_Id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1.CP1 good container push Copy",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "010ee224-51a4-4d0c-82f2-23343a943cde",
+						"exec": [
+							"let currentVesselName1 = pm.variables.replaceIn('{{$randomProductName}}')\r",
+							"\r",
+							"pm.environment.set(\"currentVesselName1\", currentVesselName1);\r",
+							"\r",
+							"let detailsMessage = pm.variables.replaceIn('{{$randomPhrase}}')\r",
+							"\r",
+							"pm.environment.set(\"detailsMessage\", detailsMessage);\r",
+							"\r",
+							"let shpId = pm.variables.replaceIn('{{$randomBankAccount}}')\r",
+							"\r",
+							"pm.environment.set(\"shpId\", shpId);\r",
+							"\r",
+							"let polLocName1 = pm.variables.replaceIn('{{$randomCity}}')\r",
+							"\r",
+							"pm.environment.set(\"polLokName1\", polLocName1);\r",
+							"\r",
+							"var month = parseInt(Math.random() * (10 - 1) + 1);\r",
+							"var day = parseInt(Math.random() * (28 - 10) + 11);\r",
+							"var code = parseInt(Math.random() * (999 - 1) + 1);\r",
+							"\r",
+							"\r",
+							"var year = \"2021\";\r",
+							"var year2022 = \"2022\";\r",
+							"var year2023 = \"2023\";\r",
+							"var year2024 = '2024';\r",
+							"var last = \"T01:46+0000\";\r",
+							"\r",
+							"var randomDate = (year.concat('-', '0', month, '-', day, last));\r",
+							"var randomDeliveryDate = (year2022.concat('-', '0', month, '-', day, last));\r",
+							"var randomPlannedLastDate = (year2023.concat('-', '0', month, '-', day, last));\r",
+							"var pol_arrival_actual = (year2024.concat('-', '0', month, '-', day, last));\r",
+							"\r",
+							"pm.environment.set(\"randomDate\", randomDate);\r",
+							"pm.environment.set(\"randomDeliveryDate\", randomDeliveryDate);\r",
+							"pm.environment.set(\"randomPlannedLastDate\", randomPlannedLastDate);\r",
+							"pm.environment.set(\"polArrivalActual\", pol_arrival_actual);\r",
+							"pm.environment.set(\"code\", code);\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "a7f8cca5-7f45-405a-80d8-747302babf98",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "7e960767-4620-49ae-a29d-612efee342c7",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "quYN3VVHtBpjC9mdz2AB2O6mC",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "oi_sandbox",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"event\":{\r\n      \"id\":766639836,\r\n      \"shipment_id\":\"{{shpId}}\",\r\n      \"details\":{\r\n         \"latitude\":\"49.5235\",\r\n         \"longitude\":\"176.7701\",\r\n         \"pos_name\":\"\",\r\n         \"transport_mode\":10,\r\n         \"pos_datetime\":\"2021-08-25T10:01+0000\",\r\n         \"message\":\"{{detailsMessage}}\"\r\n      },\r\n      \"shipment\":\"http://capi.ocean-insights.com/containertracking/v2/shipments/15516986/\",\r\n      \"code\":\"{{code}}\",\r\n      \"severity\":0,\r\n      \"walltime\":\"2021-08-25T10:01+0000\",\r\n      \"created\":\"2021-08-25T13:57+0000\"\r\n   },\r\n   \"shipment\":{\r\n      \"id\":\"{{shpId}}\",\r\n      \"shipmentsubscription_status\":1,\r\n      \"status_verbose\":\"ocean transport to POD\",\r\n      \"current_vessel_nextport\":{\r\n         \"name\":\"Los Angeles\",\r\n         \"locode\":\"USLAX\",\r\n         \"eta\":\"2021-08-31T12:00+0000\"\r\n      },\r\n      \"current_vessel_position\":{\r\n         \"latitude\":49.63308333333333,\r\n         \"longitude\":178.58891666666668,\r\n         \"timestamp\":\"2021-08-25T13:21+0000\",\r\n         \"heading\":86\r\n      },\r\n      \"current_vessel\":{\r\n         \"name\":\"{{currentVesselName1}}\",\r\n         \"imo\":9300439,\r\n         \"id\":74103\r\n      },\r\n      \"container_type_iso\":null,\r\n      \"container_type_str\":null,\r\n      \"shipmentsubscription_status_verbose\":\"active\",\r\n      \"shipmentsubscription_on_hold\":false,\r\n      \"shipmentsubscription_id\":\"{{internalNumber}}\",\r\n      \"lifecycle_status_verbose\":\"active\",\r\n      \"tsp4_loc\":null,\r\n      \"tsp3_loc\":null,\r\n      \"tsp2_loc\":null,\r\n      \"tsp1_loc\":null,\r\n      \"leg5_vessel\":null,\r\n      \"leg4_vessel\":null,\r\n      \"leg3_vessel\":null,\r\n      \"leg2_vessel\":null,\r\n      \"leg1_vessel\":null,\r\n      \"dlv_loc\":null,\r\n      \"pod_loc\":null,\r\n      \"pol_loc\":{\r\n         \"name\":\"{{polLokName1}}\",\r\n         \"locode\":\"TWTPE\",\r\n         \"timezone\":\"Asia/Taipei\",\r\n         \"latitude\":25.183333,\r\n         \"longitude\":121.4\r\n      },\r\n      \"origin_loc\":{\r\n         \"name\":\"{{$randomCity}}\",\r\n         \"locode\":\"TWTXG\",\r\n         \"timezone\":\"Asia/Taipei\",\r\n         \"latitude\":24.285918,\r\n         \"longitude\":120.51339\r\n      },\r\n      \"carrier_name\":\"CMA CGM\",\r\n      \"carrier_scac\":\"CMDU\",\r\n      \"container_number\":\"DRYU4024791\",\r\n      \"descriptive_name\":null,\r\n      \"url\":\"http://capi.ocean-insights.com/containertracking/v2/shipments/15516986/\",\r\n      \"shipmentsubscription\":\"http://capi.ocean-insights.com/containertracking/v2/subscriptions/25381893/\",\r\n      \"tags\":[\r\n         \r\n      ],\r\n      \"tsp1_vslarrival_prediction\":null,\r\n      \"tsp2_vslarrival_prediction\":null,\r\n      \"tsp3_vslarrival_prediction\":null,\r\n      \"tsp4_vslarrival_prediction\":null,\r\n      \"pod_vslarrival_prediction\":null,\r\n      \"leg1_service\":null,\r\n      \"leg2_service\":null,\r\n      \"leg3_service\":null,\r\n      \"leg4_service\":null,\r\n      \"leg5_service\":null,\r\n      \"pod_timeofarrival_warning\":null,\r\n      \"empty_pickup_loc\":null,\r\n      \"availability_loc\":null,\r\n      \"lif_loc\":null,\r\n      \"empty_return_loc\":null,\r\n      \"incidents\":null,\r\n      \"booking_number\":null,\r\n      \"bl_number\":null,\r\n      \"weight\":null,\r\n      \"status\":16,\r\n      \"lifecycle_status\":null,\r\n      \"id_date\":null,\r\n      \"empty_pickup_planned_initial\":null,\r\n      \"empty_pickup_planned_last\":null,\r\n      \"empty_pickup_actual\":\"{{randomDate}}\",\r\n      \"origin_pickup_planned_initial\":null,\r\n      \"origin_pickup_planned_last\":null,\r\n      \"origin_pickup_actual\":null,\r\n      \"pol_arrival_planned_initial\":null,\r\n      \"pol_arrival_planned_last\":null,\r\n      \"pol_arrival_actual\":\"{{polArrivalActual}}\",\r\n      \"pol_loaded_planned_initial\":null,\r\n      \"pol_loaded_planned_last\":null,\r\n      \"pol_loaded_actual\":null,\r\n      \"pol_vsldeparture_planned_initial\":null,\r\n      \"pol_vsldeparture_planned_last\":null,\r\n      \"pol_vsldeparture_actual\":null,\r\n      \"pol_vsldeparture_detected\":null,\r\n      \"leg1_voyage\":null,\r\n      \"tsp1_vslarrival_planned_initial\":null,\r\n      \"tsp1_vslarrival_planned_last\":null,\r\n      \"tsp1_vslarrival_actual\":null,\r\n      \"tsp1_vslarrival_detected\":null,\r\n      \"tsp1_discharge_planned_initial\":null,\r\n      \"tsp1_discharge_planned_last\":null,\r\n      \"tsp1_discharge_actual\":null,\r\n      \"tsp1_loaded_planned_initial\":null,\r\n      \"tsp1_loaded_planned_last\":null,\r\n      \"tsp1_loaded_actual\":null,\r\n      \"tsp1_vsldeparture_planned_initial\":null,\r\n      \"tsp1_vsldeparture_planned_last\":null,\r\n      \"tsp1_vsldeparture_actual\":null,\r\n      \"tsp1_vsldeparture_detected\":null,\r\n      \"leg2_voyage\":null,\r\n      \"tsp2_vslarrival_planned_initial\":null,\r\n      \"tsp2_vslarrival_planned_last\":null,\r\n      \"tsp2_vslarrival_actual\":null,\r\n      \"tsp2_vslarrival_detected\":null,\r\n      \"tsp2_discharge_planned_initial\":null,\r\n      \"tsp2_discharge_planned_last\":null,\r\n      \"tsp2_discharge_actual\":null,\r\n      \"tsp2_loaded_planned_initial\":null,\r\n      \"tsp2_loaded_planned_last\":null,\r\n      \"tsp2_loaded_actual\":null,\r\n      \"tsp2_vsldeparture_planned_initial\":null,\r\n      \"tsp2_vsldeparture_planned_last\":null,\r\n      \"tsp2_vsldeparture_actual\":null,\r\n      \"tsp2_vsldeparture_detected\":null,\r\n      \"leg3_voyage\":null,\r\n      \"tsp3_vslarrival_planned_initial\":null,\r\n      \"tsp3_vslarrival_planned_last\":null,\r\n      \"tsp3_vslarrival_actual\":null,\r\n      \"tsp3_vslarrival_detected\":null,\r\n      \"tsp3_discharge_planned_initial\":null,\r\n      \"tsp3_discharge_planned_last\":null,\r\n      \"tsp3_discharge_actual\":null,\r\n      \"tsp3_loaded_planned_initial\":null,\r\n      \"tsp3_loaded_planned_last\":null,\r\n      \"tsp3_loaded_actual\":null,\r\n      \"tsp3_vsldeparture_planned_initial\":null,\r\n      \"tsp3_vsldeparture_planned_last\":null,\r\n      \"tsp3_vsldeparture_actual\":null,\r\n      \"tsp3_vsldeparture_detected\":null,\r\n      \"leg4_voyage\":null,\r\n      \"tsp4_vslarrival_planned_initial\":null,\r\n      \"tsp4_vslarrival_planned_last\":null,\r\n      \"tsp4_vslarrival_actual\":null,\r\n      \"tsp4_vslarrival_detected\":null,\r\n      \"tsp4_discharge_planned_initial\":null,\r\n      \"tsp4_discharge_planned_last\":null,\r\n      \"tsp4_discharge_actual\":null,\r\n      \"tsp4_loaded_planned_initial\":null,\r\n      \"tsp4_loaded_planned_last\":null,\r\n      \"tsp4_loaded_actual\":null,\r\n      \"tsp4_vsldeparture_planned_initial\":null,\r\n      \"tsp4_vsldeparture_planned_last\":null,\r\n      \"tsp4_vsldeparture_actual\":null,\r\n      \"tsp4_vsldeparture_detected\":null,\r\n      \"leg5_voyage\":null,\r\n      \"pod_vslarrival_planned_initial\":null,\r\n      \"pod_vslarrival_planned_last\":null,\r\n      \"pod_vslarrival_actual\":null,\r\n      \"pod_vslarrival_detected\":null,\r\n      \"pod_discharge_planned_initial\":null,\r\n      \"pod_discharge_planned_last\":null,\r\n      \"pod_discharge_actual\":null,\r\n      \"pod_departure_planned_initial\":null,\r\n      \"pod_departure_planned_last\":null,\r\n      \"pod_departure_actual\":null,\r\n      \"lif_arrival_planned_initial\":null,\r\n      \"lif_arrival_planned_last\":null,\r\n      \"lif_arrival_actual\":null,\r\n      \"lif_departure_planned_initial\":null,\r\n      \"lif_departure_planned_last\":null,\r\n      \"lif_departure_actual\":null,\r\n      \"dlv_delivery_planned_initial\":null,\r\n      \"dlv_delivery_planned_last\":null,\r\n      \"dlv_delivery_actual\":\"{{randomDeliveryDate}}\",\r\n      \"empty_return_planned_initial\":null,\r\n      \"empty_return_planned_last\":\"{{randomPlannedLastDate}}\",\r\n      \"empty_return_actual\":null,\r\n      \"empty_return_customer\":null,\r\n      \"ts_count\":0,\r\n      \"customs_release_state\":null,\r\n      \"customs_release_date\":null,\r\n      \"carrier_release_state\":null,\r\n      \"carrier_release_date\":null,\r\n      \"availability_date\":null,\r\n      \"created\":null,\r\n      \"modified\":null\r\n   },\r\n    \"generated\": \"2021-08-25T13:57+0000\",\r\n    \"security_token\": \"8de09f462e98f039ff4edad9292cdd6230410450\",\r\n    \"event_class\": \"ContainerShipmentEvent\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/v1/event_push_receiver",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"v1",
+						"event_push_receiver"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.CP1 good container push Copy 2",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ad3e93ec-6765-4c57-a60a-29b255e8b777",
+						"exec": [
+							"let currentVesselName2 = pm.variables.replaceIn('{{$randomProductName}}')\r",
+							"\r",
+							"pm.environment.set(\"currentVesselName2\", currentVesselName2);\r",
+							"\r",
+							"let detailsMessage2 = pm.variables.replaceIn('{{$randomPhrase}}')\r",
+							"\r",
+							"pm.environment.set(\"detailsMessage2\", detailsMessage2);\r",
+							"\r",
+							"let shpId2 = pm.variables.replaceIn('{{$randomBankAccount}}')\r",
+							"\r",
+							"pm.environment.set(\"shpId2\", shpId2);\r",
+							"\r",
+							"let polLocName2 = pm.variables.replaceIn('{{$randomCity}}')\r",
+							"\r",
+							"pm.environment.set(\"polLokName2\", polLocName2);\r",
+							"\r",
+							"var month = parseInt(Math.random() * (10 - 1) + 1);\r",
+							"var day = parseInt(Math.random() * (28 - 10) + 11);\r",
+							"\r",
+							"var year = \"2021\";\r",
+							"var year2022 = \"2022\";\r",
+							"var year2023 = \"2023\";\r",
+							"var year2024 = '2024';\r",
+							"var last = \"T01:46+0000\";\r",
+							"\r",
+							"var randomDate2 = (year.concat('-', '0', month, '-', day, last));\r",
+							"var randomDeliveryDate2 = (year2022.concat('-', '0', month, '-', day, last));\r",
+							"var randomPlannedLastDate2 = (year2023.concat('-', '0', month, '-', day, last));\r",
+							"var pol_arrival_actual2 = (year2024.concat('-', '0', month, '-', day, last));\r",
+							"\r",
+							"pm.environment.set(\"randomDate2\", randomDate2);\r",
+							"pm.environment.set(\"randomDeliveryDate2\", randomDeliveryDate2);\r",
+							"pm.environment.set(\"randomPlannedLastDate2\", randomPlannedLastDate2);\r",
+							"pm.environment.set(\"polArrivalActual2\", pol_arrival_actual2);\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "521b75cf-a291-44fe-9202-69f73bcc0f0b",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "6709c763-1bb1-4e37-8a59-fb2d60e43339",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "quYN3VVHtBpjC9mdz2AB2O6mC",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "oi_sandbox",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"event\":{\r\n      \"id\":766639836,\r\n      \"shipment_id\":{{shpId2}},\r\n      \"details\":{\r\n         \"latitude\":\"49.5235\",\r\n         \"longitude\":\"176.7701\",\r\n         \"pos_name\":\"\",\r\n         \"transport_mode\":10,\r\n         \"pos_datetime\":\"2021-08-25T10:01+0000\",\r\n         \"message\":\"{{detailsMessage2}}\"\r\n      },\r\n      \"shipment\":\"http://capi.ocean-insights.com/containertracking/v2/shipments/15516986/\",\r\n      \"code\":20,\r\n      \"severity\":0,\r\n      \"walltime\":\"2021-08-25T10:01+0000\",\r\n      \"created\":\"2021-08-25T13:57+0000\"\r\n   },\r\n   \"shipment\":{\r\n      \"id\":\"{{shpId2}}\",\r\n      \"shipmentsubscription_status\":1,\r\n      \"status_verbose\":\"ocean transport to POD\",\r\n      \"current_vessel_nextport\":{\r\n         \"name\":\"Los Angeles\",\r\n         \"locode\":\"USLAX\",\r\n         \"eta\":\"2021-08-31T12:00+0000\"\r\n      },\r\n      \"current_vessel_position\":{\r\n         \"latitude\":49.63308333333333,\r\n         \"longitude\":178.58891666666668,\r\n         \"timestamp\":\"2021-08-25T13:21+0000\",\r\n         \"heading\":86\r\n      },\r\n      \"current_vessel\":{\r\n         \"name\":\"{{currentVesselName2}}\",\r\n         \"imo\":9300439,\r\n         \"id\":74103\r\n      },\r\n      \"container_type_iso\":null,\r\n      \"container_type_str\":null,\r\n      \"shipmentsubscription_status_verbose\":\"active\",\r\n      \"shipmentsubscription_on_hold\":false,\r\n      \"shipmentsubscription_id\":\"{{internalNumber}}\",\r\n      \"lifecycle_status_verbose\":\"active\",\r\n      \"tsp4_loc\":null,\r\n      \"tsp3_loc\":null,\r\n      \"tsp2_loc\":null,\r\n      \"tsp1_loc\":null,\r\n      \"leg5_vessel\":null,\r\n      \"leg4_vessel\":null,\r\n      \"leg3_vessel\":null,\r\n      \"leg2_vessel\":null,\r\n      \"leg1_vessel\":null,\r\n      \"dlv_loc\":null,\r\n      \"pod_loc\":null,\r\n      \"pol_loc\":{\r\n         \"name\":\"{{polLokName2}}\",\r\n         \"locode\":\"TWTPE\",\r\n         \"timezone\":\"Asia/Taipei\",\r\n         \"latitude\":25.183333,\r\n         \"longitude\":121.4\r\n      },\r\n      \"origin_loc\":{\r\n         \"name\":\"{{$randomCity}}\",\r\n         \"locode\":\"TWTXG\",\r\n         \"timezone\":\"Asia/Taipei\",\r\n         \"latitude\":24.285918,\r\n         \"longitude\":120.51339\r\n      },\r\n      \"carrier_name\":\"CMA CGM\",\r\n      \"carrier_scac\":\"CMDU\",\r\n      \"container_number\":\"DRYU4024791\",\r\n      \"descriptive_name\":null,\r\n      \"url\":\"http://capi.ocean-insights.com/containertracking/v2/shipments/15516986/\",\r\n      \"shipmentsubscription\":\"http://capi.ocean-insights.com/containertracking/v2/subscriptions/25381893/\",\r\n      \"tags\":[\r\n         \r\n      ],\r\n      \"tsp1_vslarrival_prediction\":null,\r\n      \"tsp2_vslarrival_prediction\":null,\r\n      \"tsp3_vslarrival_prediction\":null,\r\n      \"tsp4_vslarrival_prediction\":null,\r\n      \"pod_vslarrival_prediction\":null,\r\n      \"leg1_service\":null,\r\n      \"leg2_service\":null,\r\n      \"leg3_service\":null,\r\n      \"leg4_service\":null,\r\n      \"leg5_service\":null,\r\n      \"pod_timeofarrival_warning\":null,\r\n      \"empty_pickup_loc\":null,\r\n      \"availability_loc\":null,\r\n      \"lif_loc\":null,\r\n      \"empty_return_loc\":null,\r\n      \"incidents\":null,\r\n      \"booking_number\":null,\r\n      \"bl_number\":null,\r\n      \"weight\":null,\r\n      \"status\":16,\r\n      \"lifecycle_status\":null,\r\n      \"id_date\":null,\r\n      \"empty_pickup_planned_initial\":null,\r\n      \"empty_pickup_planned_last\":null,\r\n      \"empty_pickup_actual\":\"{{randomDate2}}\",\r\n      \"origin_pickup_planned_initial\":null,\r\n      \"origin_pickup_planned_last\":null,\r\n      \"origin_pickup_actual\":null,\r\n      \"pol_arrival_planned_initial\":null,\r\n      \"pol_arrival_planned_last\":null,\r\n      \"pol_arrival_actual\":\"{{polArrivalActual2}}\",\r\n      \"pol_loaded_planned_initial\":null,\r\n      \"pol_loaded_planned_last\":null,\r\n      \"pol_loaded_actual\":null,\r\n      \"pol_vsldeparture_planned_initial\":null,\r\n      \"pol_vsldeparture_planned_last\":null,\r\n      \"pol_vsldeparture_actual\":null,\r\n      \"pol_vsldeparture_detected\":null,\r\n      \"leg1_voyage\":null,\r\n      \"tsp1_vslarrival_planned_initial\":null,\r\n      \"tsp1_vslarrival_planned_last\":null,\r\n      \"tsp1_vslarrival_actual\":null,\r\n      \"tsp1_vslarrival_detected\":null,\r\n      \"tsp1_discharge_planned_initial\":null,\r\n      \"tsp1_discharge_planned_last\":null,\r\n      \"tsp1_discharge_actual\":null,\r\n      \"tsp1_loaded_planned_initial\":null,\r\n      \"tsp1_loaded_planned_last\":null,\r\n      \"tsp1_loaded_actual\":null,\r\n      \"tsp1_vsldeparture_planned_initial\":null,\r\n      \"tsp1_vsldeparture_planned_last\":null,\r\n      \"tsp1_vsldeparture_actual\":null,\r\n      \"tsp1_vsldeparture_detected\":null,\r\n      \"leg2_voyage\":null,\r\n      \"tsp2_vslarrival_planned_initial\":null,\r\n      \"tsp2_vslarrival_planned_last\":null,\r\n      \"tsp2_vslarrival_actual\":null,\r\n      \"tsp2_vslarrival_detected\":null,\r\n      \"tsp2_discharge_planned_initial\":null,\r\n      \"tsp2_discharge_planned_last\":null,\r\n      \"tsp2_discharge_actual\":null,\r\n      \"tsp2_loaded_planned_initial\":null,\r\n      \"tsp2_loaded_planned_last\":null,\r\n      \"tsp2_loaded_actual\":null,\r\n      \"tsp2_vsldeparture_planned_initial\":null,\r\n      \"tsp2_vsldeparture_planned_last\":null,\r\n      \"tsp2_vsldeparture_actual\":null,\r\n      \"tsp2_vsldeparture_detected\":null,\r\n      \"leg3_voyage\":null,\r\n      \"tsp3_vslarrival_planned_initial\":null,\r\n      \"tsp3_vslarrival_planned_last\":null,\r\n      \"tsp3_vslarrival_actual\":null,\r\n      \"tsp3_vslarrival_detected\":null,\r\n      \"tsp3_discharge_planned_initial\":null,\r\n      \"tsp3_discharge_planned_last\":null,\r\n      \"tsp3_discharge_actual\":null,\r\n      \"tsp3_loaded_planned_initial\":null,\r\n      \"tsp3_loaded_planned_last\":null,\r\n      \"tsp3_loaded_actual\":null,\r\n      \"tsp3_vsldeparture_planned_initial\":null,\r\n      \"tsp3_vsldeparture_planned_last\":null,\r\n      \"tsp3_vsldeparture_actual\":null,\r\n      \"tsp3_vsldeparture_detected\":null,\r\n      \"leg4_voyage\":null,\r\n      \"tsp4_vslarrival_planned_initial\":null,\r\n      \"tsp4_vslarrival_planned_last\":null,\r\n      \"tsp4_vslarrival_actual\":null,\r\n      \"tsp4_vslarrival_detected\":null,\r\n      \"tsp4_discharge_planned_initial\":null,\r\n      \"tsp4_discharge_planned_last\":null,\r\n      \"tsp4_discharge_actual\":null,\r\n      \"tsp4_loaded_planned_initial\":null,\r\n      \"tsp4_loaded_planned_last\":null,\r\n      \"tsp4_loaded_actual\":null,\r\n      \"tsp4_vsldeparture_planned_initial\":null,\r\n      \"tsp4_vsldeparture_planned_last\":null,\r\n      \"tsp4_vsldeparture_actual\":null,\r\n      \"tsp4_vsldeparture_detected\":null,\r\n      \"leg5_voyage\":null,\r\n      \"pod_vslarrival_planned_initial\":null,\r\n      \"pod_vslarrival_planned_last\":null,\r\n      \"pod_vslarrival_actual\":null,\r\n      \"pod_vslarrival_detected\":null,\r\n      \"pod_discharge_planned_initial\":null,\r\n      \"pod_discharge_planned_last\":null,\r\n      \"pod_discharge_actual\":null,\r\n      \"pod_departure_planned_initial\":null,\r\n      \"pod_departure_planned_last\":null,\r\n      \"pod_departure_actual\":null,\r\n      \"lif_arrival_planned_initial\":null,\r\n      \"lif_arrival_planned_last\":null,\r\n      \"lif_arrival_actual\":null,\r\n      \"lif_departure_planned_initial\":null,\r\n      \"lif_departure_planned_last\":null,\r\n      \"lif_departure_actual\":null,\r\n      \"dlv_delivery_planned_initial\":null,\r\n      \"dlv_delivery_planned_last\":null,\r\n      \"dlv_delivery_actual\":\"{{randomDeliveryDate2}}\",\r\n      \"empty_return_planned_initial\":null,\r\n      \"empty_return_planned_last\":\"{{randomPlannedLastDate2}}\",\r\n      \"empty_return_actual\":null,\r\n      \"empty_return_customer\":null,\r\n      \"ts_count\":0,\r\n      \"customs_release_state\":null,\r\n      \"customs_release_date\":null,\r\n      \"carrier_release_state\":null,\r\n      \"carrier_release_date\":null,\r\n      \"availability_date\":null,\r\n      \"created\":null,\r\n      \"modified\":null\r\n   },\r\n    \"generated\": \"2021-08-25T13:57+0000\",\r\n    \"security_token\": \"8de09f462e98f039ff4edad9292cdd6230410450\",\r\n    \"event_class\": \"ContainerShipmentEvent\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/v1/event_push_receiver",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"v1",
+						"event_push_receiver"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3.CP1 good container push",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "1ad90950-84c4-4e9d-9f92-3cf08c07b5ad",
+						"exec": [
+							"let currentVesselName3 = pm.variables.replaceIn('{{$randomProductName}}')\r",
+							"\r",
+							"pm.environment.set(\"currentVesselName3\", currentVesselName3);\r",
+							"\r",
+							"let detailsMessage3 = pm.variables.replaceIn('{{$randomPhrase}}')\r",
+							"\r",
+							"pm.environment.set(\"detailsMessage3\", detailsMessage3);\r",
+							"\r",
+							"let shpId3 = pm.variables.replaceIn('{{$randomBankAccount}}')\r",
+							"\r",
+							"pm.environment.set(\"shpId3\", shpId3);\r",
+							"\r",
+							"let polLocName3 = pm.variables.replaceIn('{{$randomCity}}')\r",
+							"\r",
+							"pm.environment.set(\"polLokName3\", polLocName3);\r",
+							"\r",
+							"var mth = parseInt(Math.random() * (10 - 1) + 1);\r",
+							"var day = parseInt(Math.random() * (28 - 10) + 11);\r",
+							"\r",
+							"var year = \"2021\";\r",
+							"var year2022 = \"2022\";\r",
+							"var year2023 = \"2023\";\r",
+							"var year2024 = '2024';\r",
+							"var last = \"T01:46+0000\";\r",
+							"\r",
+							"var randomDate3 = (year.concat('-', '0', mth, '-', day, last));\r",
+							"var randomDeliveryDate3 = (year2022.concat('-', '0', mth, '-', day, last));\r",
+							"var randomPlannedLastDate3 = (year2023.concat('-', '0', mth, '-', day, last));\r",
+							"var pol_arrival_actual3 = (year2024.concat('-', '0', mth, '-', day, last));\r",
+							"\r",
+							"pm.environment.set(\"randomDate3\", randomDate3);\r",
+							"pm.environment.set(\"randomDeliveryDate3\", randomDeliveryDate3);\r",
+							"pm.environment.set(\"randomPlannedLastDate3\", randomPlannedLastDate3);\r",
+							"pm.environment.set(\"polArrivalActual3\", pol_arrival_actual3);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "e7663c27-2054-47a2-b5e3-15050a2245c6",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "dc7972b0-3afb-48fd-954c-52c5dd95fd9d",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "quYN3VVHtBpjC9mdz2AB2O6mC",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "oi_sandbox",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"event\":{\r\n      \"id\":766639836,\r\n      \"shipment_id\":\"{{shpId3}}\",\r\n      \"details\":{\r\n         \"latitude\":\"49.5235\",\r\n         \"longitude\":\"176.7701\",\r\n         \"pos_name\":\"\",\r\n         \"transport_mode\":10,\r\n         \"pos_datetime\":\"2021-08-25T10:01+0000\",\r\n         \"message\":\"{{detailsMessage3}}\"\r\n      },\r\n      \"shipment\":\"http://capi.ocean-insights.com/containertracking/v2/shipments/15516986/\",\r\n      \"code\":20,\r\n      \"severity\":0,\r\n      \"walltime\":\"2021-08-25T10:01+0000\",\r\n      \"created\":\"2021-08-25T13:57+0000\"\r\n   },\r\n   \"shipment\":{\r\n      \"id\":\"{{shpId3}}\",\r\n      \"shipmentsubscription_status\":1,\r\n      \"status_verbose\":\"ocean transport to POD\",\r\n      \"current_vessel_nextport\":{\r\n         \"name\":\"Los Angeles\",\r\n         \"locode\":\"USLAX\",\r\n         \"eta\":\"2021-08-31T12:00+0000\"\r\n      },\r\n      \"current_vessel_position\":{\r\n         \"latitude\":49.63308333333333,\r\n         \"longitude\":178.58891666666668,\r\n         \"timestamp\":\"2021-08-25T13:21+0000\",\r\n         \"heading\":86\r\n      },\r\n      \"current_vessel\":{\r\n         \"name\":\"{{currentVesselName3}}\",\r\n         \"imo\":9300439,\r\n         \"id\":74103\r\n      },\r\n      \"container_type_iso\":null,\r\n      \"container_type_str\":null,\r\n      \"shipmentsubscription_status_verbose\":\"active\",\r\n      \"shipmentsubscription_on_hold\":false,\r\n      \"shipmentsubscription_id\":\"{{internalNumber}}\",\r\n      \"lifecycle_status_verbose\":\"active\",\r\n      \"tsp4_loc\":null,\r\n      \"tsp3_loc\":null,\r\n      \"tsp2_loc\":null,\r\n      \"tsp1_loc\":null,\r\n      \"leg5_vessel\":null,\r\n      \"leg4_vessel\":null,\r\n      \"leg3_vessel\":null,\r\n      \"leg2_vessel\":null,\r\n      \"leg1_vessel\":null,\r\n      \"dlv_loc\":null,\r\n      \"pod_loc\":null,\r\n      \"pol_loc\":{\r\n         \"name\":\"{{polLokName3}}\",\r\n         \"locode\":\"TWTPE\",\r\n         \"timezone\":\"Asia/Taipei\",\r\n         \"latitude\":25.183333,\r\n         \"longitude\":121.4\r\n      },\r\n      \"origin_loc\":{\r\n         \"name\":\"{{$randomCity}}\",\r\n         \"locode\":\"TWTXG\",\r\n         \"timezone\":\"Asia/Taipei\",\r\n         \"latitude\":24.285918,\r\n         \"longitude\":120.51339\r\n      },\r\n      \"carrier_name\":\"CMA CGM\",\r\n      \"carrier_scac\":\"CMDU\",\r\n      \"container_number\":\"DRYU4024791\",\r\n      \"descriptive_name\":null,\r\n      \"url\":\"http://capi.ocean-insights.com/containertracking/v2/shipments/15516986/\",\r\n      \"shipmentsubscription\":\"http://capi.ocean-insights.com/containertracking/v2/subscriptions/25381893/\",\r\n      \"tags\":[\r\n         \r\n      ],\r\n      \"tsp1_vslarrival_prediction\":null,\r\n      \"tsp2_vslarrival_prediction\":null,\r\n      \"tsp3_vslarrival_prediction\":null,\r\n      \"tsp4_vslarrival_prediction\":null,\r\n      \"pod_vslarrival_prediction\":null,\r\n      \"leg1_service\":null,\r\n      \"leg2_service\":null,\r\n      \"leg3_service\":null,\r\n      \"leg4_service\":null,\r\n      \"leg5_service\":null,\r\n      \"pod_timeofarrival_warning\":null,\r\n      \"empty_pickup_loc\":null,\r\n      \"availability_loc\":null,\r\n      \"lif_loc\":null,\r\n      \"empty_return_loc\":null,\r\n      \"incidents\":null,\r\n      \"booking_number\":null,\r\n      \"bl_number\":null,\r\n      \"weight\":null,\r\n      \"status\":16,\r\n      \"lifecycle_status\":null,\r\n      \"id_date\":null,\r\n      \"empty_pickup_planned_initial\":null,\r\n      \"empty_pickup_planned_last\":null,\r\n      \"empty_pickup_actual\":\"{{randomDate3}}\",\r\n      \"origin_pickup_planned_initial\":null,\r\n      \"origin_pickup_planned_last\":null,\r\n      \"origin_pickup_actual\":null,\r\n      \"pol_arrival_planned_initial\":null,\r\n      \"pol_arrival_planned_last\":null,\r\n      \"pol_arrival_actual\":\"{{polArrivalActual3}}\",\r\n      \"pol_loaded_planned_initial\":null,\r\n      \"pol_loaded_planned_last\":null,\r\n      \"pol_loaded_actual\":null,\r\n      \"pol_vsldeparture_planned_initial\":null,\r\n      \"pol_vsldeparture_planned_last\":null,\r\n      \"pol_vsldeparture_actual\":null,\r\n      \"pol_vsldeparture_detected\":null,\r\n      \"leg1_voyage\":null,\r\n      \"tsp1_vslarrival_planned_initial\":null,\r\n      \"tsp1_vslarrival_planned_last\":null,\r\n      \"tsp1_vslarrival_actual\":null,\r\n      \"tsp1_vslarrival_detected\":null,\r\n      \"tsp1_discharge_planned_initial\":null,\r\n      \"tsp1_discharge_planned_last\":null,\r\n      \"tsp1_discharge_actual\":null,\r\n      \"tsp1_loaded_planned_initial\":null,\r\n      \"tsp1_loaded_planned_last\":null,\r\n      \"tsp1_loaded_actual\":null,\r\n      \"tsp1_vsldeparture_planned_initial\":null,\r\n      \"tsp1_vsldeparture_planned_last\":null,\r\n      \"tsp1_vsldeparture_actual\":null,\r\n      \"tsp1_vsldeparture_detected\":null,\r\n      \"leg2_voyage\":null,\r\n      \"tsp2_vslarrival_planned_initial\":null,\r\n      \"tsp2_vslarrival_planned_last\":null,\r\n      \"tsp2_vslarrival_actual\":null,\r\n      \"tsp2_vslarrival_detected\":null,\r\n      \"tsp2_discharge_planned_initial\":null,\r\n      \"tsp2_discharge_planned_last\":null,\r\n      \"tsp2_discharge_actual\":null,\r\n      \"tsp2_loaded_planned_initial\":null,\r\n      \"tsp2_loaded_planned_last\":null,\r\n      \"tsp2_loaded_actual\":null,\r\n      \"tsp2_vsldeparture_planned_initial\":null,\r\n      \"tsp2_vsldeparture_planned_last\":null,\r\n      \"tsp2_vsldeparture_actual\":null,\r\n      \"tsp2_vsldeparture_detected\":null,\r\n      \"leg3_voyage\":null,\r\n      \"tsp3_vslarrival_planned_initial\":null,\r\n      \"tsp3_vslarrival_planned_last\":null,\r\n      \"tsp3_vslarrival_actual\":null,\r\n      \"tsp3_vslarrival_detected\":null,\r\n      \"tsp3_discharge_planned_initial\":null,\r\n      \"tsp3_discharge_planned_last\":null,\r\n      \"tsp3_discharge_actual\":null,\r\n      \"tsp3_loaded_planned_initial\":null,\r\n      \"tsp3_loaded_planned_last\":null,\r\n      \"tsp3_loaded_actual\":null,\r\n      \"tsp3_vsldeparture_planned_initial\":null,\r\n      \"tsp3_vsldeparture_planned_last\":null,\r\n      \"tsp3_vsldeparture_actual\":null,\r\n      \"tsp3_vsldeparture_detected\":null,\r\n      \"leg4_voyage\":null,\r\n      \"tsp4_vslarrival_planned_initial\":null,\r\n      \"tsp4_vslarrival_planned_last\":null,\r\n      \"tsp4_vslarrival_actual\":null,\r\n      \"tsp4_vslarrival_detected\":null,\r\n      \"tsp4_discharge_planned_initial\":null,\r\n      \"tsp4_discharge_planned_last\":null,\r\n      \"tsp4_discharge_actual\":null,\r\n      \"tsp4_loaded_planned_initial\":null,\r\n      \"tsp4_loaded_planned_last\":null,\r\n      \"tsp4_loaded_actual\":null,\r\n      \"tsp4_vsldeparture_planned_initial\":null,\r\n      \"tsp4_vsldeparture_planned_last\":null,\r\n      \"tsp4_vsldeparture_actual\":null,\r\n      \"tsp4_vsldeparture_detected\":null,\r\n      \"leg5_voyage\":null,\r\n      \"pod_vslarrival_planned_initial\":null,\r\n      \"pod_vslarrival_planned_last\":null,\r\n      \"pod_vslarrival_actual\":null,\r\n      \"pod_vslarrival_detected\":null,\r\n      \"pod_discharge_planned_initial\":null,\r\n      \"pod_discharge_planned_last\":null,\r\n      \"pod_discharge_actual\":null,\r\n      \"pod_departure_planned_initial\":null,\r\n      \"pod_departure_planned_last\":null,\r\n      \"pod_departure_actual\":null,\r\n      \"lif_arrival_planned_initial\":null,\r\n      \"lif_arrival_planned_last\":null,\r\n      \"lif_arrival_actual\":null,\r\n      \"lif_departure_planned_initial\":null,\r\n      \"lif_departure_planned_last\":null,\r\n      \"lif_departure_actual\":null,\r\n      \"dlv_delivery_planned_initial\":null,\r\n      \"dlv_delivery_planned_last\":null,\r\n      \"dlv_delivery_actual\":\"{{randomDeliveryDate3}}\",\r\n      \"empty_return_planned_initial\":null,\r\n      \"empty_return_planned_last\":\"{{randomPlannedLastDate3}}\",\r\n      \"empty_return_actual\":null,\r\n      \"empty_return_customer\":null,\r\n      \"ts_count\":0,\r\n      \"customs_release_state\":null,\r\n      \"customs_release_date\":null,\r\n      \"carrier_release_state\":null,\r\n      \"carrier_release_date\":null,\r\n      \"availability_date\":null,\r\n      \"created\":null,\r\n      \"modified\":null\r\n   },\r\n    \"generated\": \"2021-08-25T13:57+0000\",\r\n    \"security_token\": \"8de09f462e98f039ff4edad9292cdd6230410450\",\r\n    \"event_class\": \"ContainerShipmentEvent\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/v1/event_push_receiver",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"v1",
+						"event_push_receiver"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4.CP1 good container push",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3e843c53-0bae-4af6-a329-f05722a496c6",
+						"exec": [
+							"let currentVesselName4 = pm.variables.replaceIn('{{$randomProductName}}')\r",
+							"\r",
+							"pm.environment.set(\"currentVesselName4\", currentVesselName4);\r",
+							"\r",
+							"let detailsMessage4 = pm.variables.replaceIn('{{$randomPhrase}}')\r",
+							"\r",
+							"pm.environment.set(\"detailsMessage4\", detailsMessage4);\r",
+							"\r",
+							"let shpId4 = pm.variables.replaceIn('{{$randomBankAccount}}')\r",
+							"\r",
+							"pm.environment.set(\"shpId4\", shpId4);\r",
+							"\r",
+							"let polLocName4 = pm.variables.replaceIn('{{$randomCity}}')\r",
+							"\r",
+							"pm.environment.set(\"polLokName4\", polLocName4);\r",
+							"\r",
+							"var month = parseInt(Math.random() * (10 - 1) + 1);\r",
+							"var day = parseInt(Math.random() * (28 - 10) + 11);\r",
+							"\r",
+							"var year = \"2021\";\r",
+							"var year2022 = \"2022\";\r",
+							"var year2023 = \"2023\";\r",
+							"var year2024 = '2024';\r",
+							"var last = \"T01:46+0000\";\r",
+							"\r",
+							"var randomDate4 = (year.concat('-', '0', month, '-', day, last));\r",
+							"var randomDeliveryDate4 = (year2022.concat('-', '0', month, '-', day, last));\r",
+							"var randomPlannedLastDate4 = (year2023.concat('-', '0', month, '-', day, last));\r",
+							"var pol_arrival_actual4 = (year2024.concat('-', '0', month, '-', day, last));\r",
+							"\r",
+							"pm.environment.set(\"randomDate4\", randomDate4);\r",
+							"pm.environment.set(\"randomDeliveryDate4\", randomDeliveryDate4);\r",
+							"pm.environment.set(\"randomPlannedLastDate4\", randomPlannedLastDate4);\r",
+							"pm.environment.set(\"polArrivalActual4\", pol_arrival_actual4);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "00615b9b-14f9-40f3-8d67-62177664eb14",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "cbb4c8ab-81e4-49e7-bee1-e1d92bea412f",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "quYN3VVHtBpjC9mdz2AB2O6mC",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "oi_sandbox",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"event\":{\r\n      \"id\":766639836,\r\n      \"shipment_id\":\"{{shpId4}}\",\r\n      \"details\":{\r\n         \"latitude\":\"49.5235\",\r\n         \"longitude\":\"176.7701\",\r\n         \"pos_name\":\"\",\r\n         \"transport_mode\":10,\r\n         \"pos_datetime\":\"2021-08-25T10:01+0000\",\r\n         \"message\":\"{{detailsMessage4}}\"\r\n      },\r\n      \"shipment\":\"http://capi.ocean-insights.com/containertracking/v2/shipments/15516986/\",\r\n      \"code\":20,\r\n      \"severity\":0,\r\n      \"walltime\":\"2021-08-25T10:01+0000\",\r\n      \"created\":\"2021-08-25T13:57+0000\"\r\n   },\r\n   \"shipment\":{\r\n      \"id\":\"{{shpId4}}\",\r\n      \"shipmentsubscription_status\":1,\r\n      \"status_verbose\":\"ocean transport to POD\",\r\n      \"current_vessel_nextport\":{\r\n         \"name\":\"Los Angeles\",\r\n         \"locode\":\"USLAX\",\r\n         \"eta\":\"2021-08-31T12:00+0000\"\r\n      },\r\n      \"current_vessel_position\":{\r\n         \"latitude\":49.63308333333333,\r\n         \"longitude\":178.58891666666668,\r\n         \"timestamp\":\"2021-08-25T13:21+0000\",\r\n         \"heading\":86\r\n      },\r\n      \"current_vessel\":{\r\n         \"name\":\"{{currentVesselName4}}\",\r\n         \"imo\":9300439,\r\n         \"id\":74103\r\n      },\r\n      \"container_type_iso\":null,\r\n      \"container_type_str\":null,\r\n      \"shipmentsubscription_status_verbose\":\"active\",\r\n      \"shipmentsubscription_on_hold\":false,\r\n      \"shipmentsubscription_id\":\"{{internalNumber}}\",\r\n      \"lifecycle_status_verbose\":\"active\",\r\n      \"tsp4_loc\":null,\r\n      \"tsp3_loc\":null,\r\n      \"tsp2_loc\":null,\r\n      \"tsp1_loc\":null,\r\n      \"leg5_vessel\":null,\r\n      \"leg4_vessel\":null,\r\n      \"leg3_vessel\":null,\r\n      \"leg2_vessel\":null,\r\n      \"leg1_vessel\":null,\r\n      \"dlv_loc\":null,\r\n      \"pod_loc\":null,\r\n      \"pol_loc\":{\r\n         \"name\":\"{{polLokName4}}\",\r\n         \"locode\":\"TWTPE\",\r\n         \"timezone\":\"Asia/Taipei\",\r\n         \"latitude\":25.183333,\r\n         \"longitude\":121.4\r\n      },\r\n      \"origin_loc\":{\r\n         \"name\":\"{{$randomCity}}\",\r\n         \"locode\":\"TWTXG\",\r\n         \"timezone\":\"Asia/Taipei\",\r\n         \"latitude\":24.285918,\r\n         \"longitude\":120.51339\r\n      },\r\n      \"carrier_name\":\"CMA CGM\",\r\n      \"carrier_scac\":\"CMDU\",\r\n      \"container_number\":\"DRYU4024791\",\r\n      \"descriptive_name\":null,\r\n      \"url\":\"http://capi.ocean-insights.com/containertracking/v2/shipments/15516986/\",\r\n      \"shipmentsubscription\":\"http://capi.ocean-insights.com/containertracking/v2/subscriptions/25381893/\",\r\n      \"tags\":[\r\n         \r\n      ],\r\n      \"tsp1_vslarrival_prediction\":null,\r\n      \"tsp2_vslarrival_prediction\":null,\r\n      \"tsp3_vslarrival_prediction\":null,\r\n      \"tsp4_vslarrival_prediction\":null,\r\n      \"pod_vslarrival_prediction\":null,\r\n      \"leg1_service\":null,\r\n      \"leg2_service\":null,\r\n      \"leg3_service\":null,\r\n      \"leg4_service\":null,\r\n      \"leg5_service\":null,\r\n      \"pod_timeofarrival_warning\":null,\r\n      \"empty_pickup_loc\":null,\r\n      \"availability_loc\":null,\r\n      \"lif_loc\":null,\r\n      \"empty_return_loc\":null,\r\n      \"incidents\":null,\r\n      \"booking_number\":null,\r\n      \"bl_number\":null,\r\n      \"weight\":null,\r\n      \"status\":16,\r\n      \"lifecycle_status\":null,\r\n      \"id_date\":null,\r\n      \"empty_pickup_planned_initial\":null,\r\n      \"empty_pickup_planned_last\":null,\r\n      \"empty_pickup_actual\":\"{{randomDate4}}\",\r\n      \"origin_pickup_planned_initial\":null,\r\n      \"origin_pickup_planned_last\":null,\r\n      \"origin_pickup_actual\":null,\r\n      \"pol_arrival_planned_initial\":null,\r\n      \"pol_arrival_planned_last\":null,\r\n      \"pol_arrival_actual\":\"{{polArrivalActual4}}\",\r\n      \"pol_loaded_planned_initial\":null,\r\n      \"pol_loaded_planned_last\":null,\r\n      \"pol_loaded_actual\":null,\r\n      \"pol_vsldeparture_planned_initial\":null,\r\n      \"pol_vsldeparture_planned_last\":null,\r\n      \"pol_vsldeparture_actual\":null,\r\n      \"pol_vsldeparture_detected\":null,\r\n      \"leg1_voyage\":null,\r\n      \"tsp1_vslarrival_planned_initial\":null,\r\n      \"tsp1_vslarrival_planned_last\":null,\r\n      \"tsp1_vslarrival_actual\":null,\r\n      \"tsp1_vslarrival_detected\":null,\r\n      \"tsp1_discharge_planned_initial\":null,\r\n      \"tsp1_discharge_planned_last\":null,\r\n      \"tsp1_discharge_actual\":null,\r\n      \"tsp1_loaded_planned_initial\":null,\r\n      \"tsp1_loaded_planned_last\":null,\r\n      \"tsp1_loaded_actual\":null,\r\n      \"tsp1_vsldeparture_planned_initial\":null,\r\n      \"tsp1_vsldeparture_planned_last\":null,\r\n      \"tsp1_vsldeparture_actual\":null,\r\n      \"tsp1_vsldeparture_detected\":null,\r\n      \"leg2_voyage\":null,\r\n      \"tsp2_vslarrival_planned_initial\":null,\r\n      \"tsp2_vslarrival_planned_last\":null,\r\n      \"tsp2_vslarrival_actual\":null,\r\n      \"tsp2_vslarrival_detected\":null,\r\n      \"tsp2_discharge_planned_initial\":null,\r\n      \"tsp2_discharge_planned_last\":null,\r\n      \"tsp2_discharge_actual\":null,\r\n      \"tsp2_loaded_planned_initial\":null,\r\n      \"tsp2_loaded_planned_last\":null,\r\n      \"tsp2_loaded_actual\":null,\r\n      \"tsp2_vsldeparture_planned_initial\":null,\r\n      \"tsp2_vsldeparture_planned_last\":null,\r\n      \"tsp2_vsldeparture_actual\":null,\r\n      \"tsp2_vsldeparture_detected\":null,\r\n      \"leg3_voyage\":null,\r\n      \"tsp3_vslarrival_planned_initial\":null,\r\n      \"tsp3_vslarrival_planned_last\":null,\r\n      \"tsp3_vslarrival_actual\":null,\r\n      \"tsp3_vslarrival_detected\":null,\r\n      \"tsp3_discharge_planned_initial\":null,\r\n      \"tsp3_discharge_planned_last\":null,\r\n      \"tsp3_discharge_actual\":null,\r\n      \"tsp3_loaded_planned_initial\":null,\r\n      \"tsp3_loaded_planned_last\":null,\r\n      \"tsp3_loaded_actual\":null,\r\n      \"tsp3_vsldeparture_planned_initial\":null,\r\n      \"tsp3_vsldeparture_planned_last\":null,\r\n      \"tsp3_vsldeparture_actual\":null,\r\n      \"tsp3_vsldeparture_detected\":null,\r\n      \"leg4_voyage\":null,\r\n      \"tsp4_vslarrival_planned_initial\":null,\r\n      \"tsp4_vslarrival_planned_last\":null,\r\n      \"tsp4_vslarrival_actual\":null,\r\n      \"tsp4_vslarrival_detected\":null,\r\n      \"tsp4_discharge_planned_initial\":null,\r\n      \"tsp4_discharge_planned_last\":null,\r\n      \"tsp4_discharge_actual\":null,\r\n      \"tsp4_loaded_planned_initial\":null,\r\n      \"tsp4_loaded_planned_last\":null,\r\n      \"tsp4_loaded_actual\":null,\r\n      \"tsp4_vsldeparture_planned_initial\":null,\r\n      \"tsp4_vsldeparture_planned_last\":null,\r\n      \"tsp4_vsldeparture_actual\":null,\r\n      \"tsp4_vsldeparture_detected\":null,\r\n      \"leg5_voyage\":null,\r\n      \"pod_vslarrival_planned_initial\":null,\r\n      \"pod_vslarrival_planned_last\":null,\r\n      \"pod_vslarrival_actual\":null,\r\n      \"pod_vslarrival_detected\":null,\r\n      \"pod_discharge_planned_initial\":null,\r\n      \"pod_discharge_planned_last\":null,\r\n      \"pod_discharge_actual\":null,\r\n      \"pod_departure_planned_initial\":null,\r\n      \"pod_departure_planned_last\":null,\r\n      \"pod_departure_actual\":null,\r\n      \"lif_arrival_planned_initial\":null,\r\n      \"lif_arrival_planned_last\":null,\r\n      \"lif_arrival_actual\":null,\r\n      \"lif_departure_planned_initial\":null,\r\n      \"lif_departure_planned_last\":null,\r\n      \"lif_departure_actual\":null,\r\n      \"dlv_delivery_planned_initial\":null,\r\n      \"dlv_delivery_planned_last\":null,\r\n      \"dlv_delivery_actual\":\"{{randomDeliveryDate4}}\",\r\n      \"empty_return_planned_initial\":null,\r\n      \"empty_return_planned_last\":\"{{randomPlannedLastDate4}}\",\r\n      \"empty_return_actual\":null,\r\n      \"empty_return_customer\":null,\r\n      \"ts_count\":0,\r\n      \"customs_release_state\":null,\r\n      \"customs_release_date\":null,\r\n      \"carrier_release_state\":null,\r\n      \"carrier_release_date\":null,\r\n      \"availability_date\":null,\r\n      \"created\":null,\r\n      \"modified\":null\r\n   },\r\n    \"generated\": \"2021-08-25T13:57+0000\",\r\n    \"security_token\": \"8de09f462e98f039ff4edad9292cdd6230410450\",\r\n    \"event_class\": \"ContainerShipmentEvent\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/v1/event_push_receiver",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"v1",
+						"event_push_receiver"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5.CP1 good container push",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "498d5728-379f-4e31-a109-5a1adad54f66",
+						"exec": [
+							"let currentVesselName5 = pm.variables.replaceIn('{{$randomProductName}}')\r",
+							"\r",
+							"pm.environment.set(\"currentVesselName5\", currentVesselName5);\r",
+							"\r",
+							"let detailsMessage5 = pm.variables.replaceIn('{{$randomPhrase}}')\r",
+							"\r",
+							"pm.environment.set(\"detailsMessage5\", detailsMessage5);\r",
+							"\r",
+							"let shpId5 = pm.variables.replaceIn('{{$randomBankAccount}}')\r",
+							"\r",
+							"pm.environment.set(\"shpId5\", shpId5);\r",
+							"\r",
+							"let polLocName5 = pm.variables.replaceIn('{{$randomCity}}')\r",
+							"\r",
+							"pm.environment.set(\"polLokName5\", polLocName5);\r",
+							"\r",
+							"var month = parseInt(Math.random() * (10 - 1) + 1);\r",
+							"var day = parseInt(Math.random() * (28 - 10) + 11);\r",
+							"\r",
+							"var year = \"2021\";\r",
+							"var year2022 = \"2022\";\r",
+							"var year2023 = \"2023\";\r",
+							"var year2024 = '2024';\r",
+							"var last = \"T01:46+0000\";\r",
+							"\r",
+							"var randomDate5 = (year.concat('-', '0', month, '-', day, last));\r",
+							"var randomDeliveryDate5 = (year2022.concat('-', '0', month, '-', day, last));\r",
+							"var randomPlannedLastDate5 = (year2023.concat('-', '0', month, '-', day, last));\r",
+							"var pol_arrival_actual5 = (year2024.concat('-', '0', month, '-', day, last));\r",
+							"\r",
+							"pm.environment.set(\"randomDate5\", randomDate5);\r",
+							"pm.environment.set(\"randomDeliveryDate5\", randomDeliveryDate5);\r",
+							"pm.environment.set(\"randomPlannedLastDate5\", randomPlannedLastDate5);\r",
+							"pm.environment.set(\"polArrivalActual5\", pol_arrival_actual5);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "19ddfa5b-e641-4f01-8fd6-3b6de297dfc9",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "93a17ca8-e19c-4156-8ccb-e667034e1c19",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "quYN3VVHtBpjC9mdz2AB2O6mC",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "oi_sandbox",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"event\":{\r\n      \"id\":766639836,\r\n      \"shipment_id\":\"{{shpId5}}\",\r\n      \"details\":{\r\n         \"latitude\":\"49.5235\",\r\n         \"longitude\":\"176.7701\",\r\n         \"pos_name\":\"\",\r\n         \"transport_mode\":10,\r\n         \"pos_datetime\":\"2021-08-25T10:01+0000\",\r\n         \"message\":\"{{detailsMessage5}}\"\r\n      },\r\n      \"shipment\":\"http://capi.ocean-insights.com/containertracking/v2/shipments/15516986/\",\r\n      \"code\":20,\r\n      \"severity\":0,\r\n      \"walltime\":\"2021-08-25T10:01+0000\",\r\n      \"created\":\"2021-08-25T13:57+0000\"\r\n   },\r\n   \"shipment\":{\r\n      \"id\":\"{{shpId5}}\",\r\n      \"shipmentsubscription_status\":1,\r\n      \"status_verbose\":\"ocean transport to POD\",\r\n      \"current_vessel_nextport\":{\r\n         \"name\":\"Los Angeles\",\r\n         \"locode\":\"USLAX\",\r\n         \"eta\":\"2021-08-31T12:00+0000\"\r\n      },\r\n      \"current_vessel_position\":{\r\n         \"latitude\":49.63308333333333,\r\n         \"longitude\":178.58891666666668,\r\n         \"timestamp\":\"2021-08-25T13:21+0000\",\r\n         \"heading\":86\r\n      },\r\n      \"current_vessel\":{\r\n         \"name\":\"{{currentVesselName5}}\",\r\n         \"imo\":9300439,\r\n         \"id\":74103\r\n      },\r\n      \"container_type_iso\":null,\r\n      \"container_type_str\":null,\r\n      \"shipmentsubscription_status_verbose\":\"active\",\r\n      \"shipmentsubscription_on_hold\":false,\r\n      \"shipmentsubscription_id\":\"{{internalNumber}}\",\r\n      \"lifecycle_status_verbose\":\"active\",\r\n      \"tsp4_loc\":null,\r\n      \"tsp3_loc\":null,\r\n      \"tsp2_loc\":null,\r\n      \"tsp1_loc\":null,\r\n      \"leg5_vessel\":null,\r\n      \"leg4_vessel\":null,\r\n      \"leg3_vessel\":null,\r\n      \"leg2_vessel\":null,\r\n      \"leg1_vessel\":null,\r\n      \"dlv_loc\":null,\r\n      \"pod_loc\":null,\r\n      \"pol_loc\":{\r\n         \"name\":\"{{polLokName5}}\",\r\n         \"locode\":\"TWTPE\",\r\n         \"timezone\":\"Asia/Taipei\",\r\n         \"latitude\":25.183333,\r\n         \"longitude\":121.4\r\n      },\r\n      \"origin_loc\":{\r\n         \"name\":\"{{$randomCity}}\",\r\n         \"locode\":\"TWTXG\",\r\n         \"timezone\":\"Asia/Taipei\",\r\n         \"latitude\":24.285918,\r\n         \"longitude\":120.51339\r\n      },\r\n      \"carrier_name\":\"CMA CGM\",\r\n      \"carrier_scac\":\"CMDU\",\r\n      \"container_number\":\"DRYU4024791\",\r\n      \"descriptive_name\":null,\r\n      \"url\":\"http://capi.ocean-insights.com/containertracking/v2/shipments/15516986/\",\r\n      \"shipmentsubscription\":\"http://capi.ocean-insights.com/containertracking/v2/subscriptions/25381893/\",\r\n      \"tags\":[\r\n         \r\n      ],\r\n      \"tsp1_vslarrival_prediction\":null,\r\n      \"tsp2_vslarrival_prediction\":null,\r\n      \"tsp3_vslarrival_prediction\":null,\r\n      \"tsp4_vslarrival_prediction\":null,\r\n      \"pod_vslarrival_prediction\":null,\r\n      \"leg1_service\":null,\r\n      \"leg2_service\":null,\r\n      \"leg3_service\":null,\r\n      \"leg4_service\":null,\r\n      \"leg5_service\":null,\r\n      \"pod_timeofarrival_warning\":null,\r\n      \"empty_pickup_loc\":null,\r\n      \"availability_loc\":null,\r\n      \"lif_loc\":null,\r\n      \"empty_return_loc\":null,\r\n      \"incidents\":null,\r\n      \"booking_number\":null,\r\n      \"bl_number\":null,\r\n      \"weight\":null,\r\n      \"status\":16,\r\n      \"lifecycle_status\":null,\r\n      \"id_date\":null,\r\n      \"empty_pickup_planned_initial\":null,\r\n      \"empty_pickup_planned_last\":null,\r\n      \"empty_pickup_actual\":\"{{randomDate5}}\",\r\n      \"origin_pickup_planned_initial\":null,\r\n      \"origin_pickup_planned_last\":null,\r\n      \"origin_pickup_actual\":null,\r\n      \"pol_arrival_planned_initial\":null,\r\n      \"pol_arrival_planned_last\":null,\r\n      \"pol_arrival_actual\":\"{{polArrivalActual5}}\",\r\n      \"pol_loaded_planned_initial\":null,\r\n      \"pol_loaded_planned_last\":null,\r\n      \"pol_loaded_actual\":null,\r\n      \"pol_vsldeparture_planned_initial\":null,\r\n      \"pol_vsldeparture_planned_last\":null,\r\n      \"pol_vsldeparture_actual\":null,\r\n      \"pol_vsldeparture_detected\":null,\r\n      \"leg1_voyage\":null,\r\n      \"tsp1_vslarrival_planned_initial\":null,\r\n      \"tsp1_vslarrival_planned_last\":null,\r\n      \"tsp1_vslarrival_actual\":null,\r\n      \"tsp1_vslarrival_detected\":null,\r\n      \"tsp1_discharge_planned_initial\":null,\r\n      \"tsp1_discharge_planned_last\":null,\r\n      \"tsp1_discharge_actual\":null,\r\n      \"tsp1_loaded_planned_initial\":null,\r\n      \"tsp1_loaded_planned_last\":null,\r\n      \"tsp1_loaded_actual\":null,\r\n      \"tsp1_vsldeparture_planned_initial\":null,\r\n      \"tsp1_vsldeparture_planned_last\":null,\r\n      \"tsp1_vsldeparture_actual\":null,\r\n      \"tsp1_vsldeparture_detected\":null,\r\n      \"leg2_voyage\":null,\r\n      \"tsp2_vslarrival_planned_initial\":null,\r\n      \"tsp2_vslarrival_planned_last\":null,\r\n      \"tsp2_vslarrival_actual\":null,\r\n      \"tsp2_vslarrival_detected\":null,\r\n      \"tsp2_discharge_planned_initial\":null,\r\n      \"tsp2_discharge_planned_last\":null,\r\n      \"tsp2_discharge_actual\":null,\r\n      \"tsp2_loaded_planned_initial\":null,\r\n      \"tsp2_loaded_planned_last\":null,\r\n      \"tsp2_loaded_actual\":null,\r\n      \"tsp2_vsldeparture_planned_initial\":null,\r\n      \"tsp2_vsldeparture_planned_last\":null,\r\n      \"tsp2_vsldeparture_actual\":null,\r\n      \"tsp2_vsldeparture_detected\":null,\r\n      \"leg3_voyage\":null,\r\n      \"tsp3_vslarrival_planned_initial\":null,\r\n      \"tsp3_vslarrival_planned_last\":null,\r\n      \"tsp3_vslarrival_actual\":null,\r\n      \"tsp3_vslarrival_detected\":null,\r\n      \"tsp3_discharge_planned_initial\":null,\r\n      \"tsp3_discharge_planned_last\":null,\r\n      \"tsp3_discharge_actual\":null,\r\n      \"tsp3_loaded_planned_initial\":null,\r\n      \"tsp3_loaded_planned_last\":null,\r\n      \"tsp3_loaded_actual\":null,\r\n      \"tsp3_vsldeparture_planned_initial\":null,\r\n      \"tsp3_vsldeparture_planned_last\":null,\r\n      \"tsp3_vsldeparture_actual\":null,\r\n      \"tsp3_vsldeparture_detected\":null,\r\n      \"leg4_voyage\":null,\r\n      \"tsp4_vslarrival_planned_initial\":null,\r\n      \"tsp4_vslarrival_planned_last\":null,\r\n      \"tsp4_vslarrival_actual\":null,\r\n      \"tsp4_vslarrival_detected\":null,\r\n      \"tsp4_discharge_planned_initial\":null,\r\n      \"tsp4_discharge_planned_last\":null,\r\n      \"tsp4_discharge_actual\":null,\r\n      \"tsp4_loaded_planned_initial\":null,\r\n      \"tsp4_loaded_planned_last\":null,\r\n      \"tsp4_loaded_actual\":null,\r\n      \"tsp4_vsldeparture_planned_initial\":null,\r\n      \"tsp4_vsldeparture_planned_last\":null,\r\n      \"tsp4_vsldeparture_actual\":null,\r\n      \"tsp4_vsldeparture_detected\":null,\r\n      \"leg5_voyage\":null,\r\n      \"pod_vslarrival_planned_initial\":null,\r\n      \"pod_vslarrival_planned_last\":null,\r\n      \"pod_vslarrival_actual\":null,\r\n      \"pod_vslarrival_detected\":null,\r\n      \"pod_discharge_planned_initial\":null,\r\n      \"pod_discharge_planned_last\":null,\r\n      \"pod_discharge_actual\":null,\r\n      \"pod_departure_planned_initial\":null,\r\n      \"pod_departure_planned_last\":null,\r\n      \"pod_departure_actual\":null,\r\n      \"lif_arrival_planned_initial\":null,\r\n      \"lif_arrival_planned_last\":null,\r\n      \"lif_arrival_actual\":null,\r\n      \"lif_departure_planned_initial\":null,\r\n      \"lif_departure_planned_last\":null,\r\n      \"lif_departure_actual\":null,\r\n      \"dlv_delivery_planned_initial\":null,\r\n      \"dlv_delivery_planned_last\":null,\r\n      \"dlv_delivery_actual\":\"{{randomDeliveryDate5}}\",\r\n      \"empty_return_planned_initial\":null,\r\n      \"empty_return_planned_last\":\"{{randomPlannedLastDate5}}\",\r\n      \"empty_return_actual\":null,\r\n      \"empty_return_customer\":null,\r\n      \"ts_count\":0,\r\n      \"customs_release_state\":null,\r\n      \"customs_release_date\":null,\r\n      \"carrier_release_state\":null,\r\n      \"carrier_release_date\":null,\r\n      \"availability_date\":null,\r\n      \"created\":null,\r\n      \"modified\":null\r\n   },\r\n    \"generated\": \"2021-08-25T13:57+0000\",\r\n    \"security_token\": \"8de09f462e98f039ff4edad9292cdd6230410450\",\r\n    \"event_class\": \"ContainerShipmentEvent\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/v1/event_push_receiver",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"v1",
+						"event_push_receiver"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TCR1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c7b948ab-f4dc-40a5-80e8-a7a8e14ea22d",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"The lenght is 5\", function () {\r",
+							"    pm.expect(Object.keys(pm.response.json()).length).to.eql(5);;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"5 objects in array\", function (){\r",
+							"    pm.expect(pm.response.json().length).to.eql(5);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "0e066623-325a-4674-891b-208a9be790da",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{SH_EV_Password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{SH_EV_User}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/v1/transport_status_notification?externalId={{internalNumber}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"v1",
+						"transport_status_notification"
+					],
+					"query": [
+						{
+							"key": "externalId",
+							"value": "{{internalNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TCR2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c7b948ab-f4dc-40a5-80e8-a7a8e14ea22d",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"let json = pm.response.json();\r",
+							"\r",
+							"let currentName1 = pm.environment.get(\"currentVesselName1\");\r",
+							"\r",
+							"pm.test(\"Current Vessel name 1 is Correct\", function () {\r",
+							"    pm.expect(json[0].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationTransportMeans.transportMeansName).to.eql(currentName1);\r",
+							"});\r",
+							"\r",
+							"let currentName2 = pm.environment.get(\"currentVesselName2\");\r",
+							"\r",
+							"pm.test(\"Current Vessel name 2 is Correct\", function () {\r",
+							"    pm.expect(json[1].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationTransportMeans.transportMeansName).to.eql(currentName2);\r",
+							"});\r",
+							"\r",
+							"let currentName3 = pm.environment.get(\"currentVesselName3\");\r",
+							"\r",
+							"pm.test(\"Current Vessel name 3 is Correct\", function () {\r",
+							"    pm.expect(json[2].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationTransportMeans.transportMeansName).to.eql(currentName3);\r",
+							"});\r",
+							"\r",
+							"let currentName4 = pm.environment.get(\"currentVesselName4\");\r",
+							"\r",
+							"pm.test(\"Current Vessel name 4 is Correct\", function () {\r",
+							"    pm.expect(json[3].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationTransportMeans.transportMeansName).to.eql(currentName4);\r",
+							"});\r",
+							"\r",
+							"let currentName5 = pm.environment.get(\"currentVesselName5\");\r",
+							"\r",
+							"pm.test(\"Current Vessel name 5 is Correct\", function () {\r",
+							"    pm.expect(json[4].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationTransportMeans.transportMeansName).to.eql(currentName5);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "4749ad1e-ebe1-4b06-b994-362b87b1cd8e",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{SH_EV_Password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{SH_EV_User}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/v1/transport_status_notification?externalId={{internalNumber}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"v1",
+						"transport_status_notification"
+					],
+					"query": [
+						{
+							"key": "externalId",
+							"value": "{{internalNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TCR3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a0dc284b-a6bf-4b9f-9e54-f5992231e383",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"let json = pm.response.json();\r",
+							"\r",
+							"let polLokName1 = pm.environment.get(\"polLokName1\");\r",
+							"\r",
+							"pm.test(\"Current pol_lok_name 1 is Correct\", function () {\r",
+							"    pm.expect(json[0].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].transportStatus[3].logisticLocation.locationName).to.eql(polLokName1);\r",
+							"});\r",
+							"\r",
+							"let polLokName2 = pm.environment.get(\"polLokName2\");\r",
+							"\r",
+							"pm.test(\"Current pol_lok_name 2 is Correct\", function () {\r",
+							"    pm.expect(json[1].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].transportStatus[3].logisticLocation.locationName).to.eql(polLokName2);\r",
+							"});\r",
+							"\r",
+							"let polLokName3 = pm.environment.get(\"polLokName3\");\r",
+							"\r",
+							"pm.test(\"Current pol_lok_name 3 is Correct\", function () {\r",
+							"    pm.expect(json[2].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].transportStatus[3].logisticLocation.locationName).to.eql(polLokName3);\r",
+							"});\r",
+							"\r",
+							"let polLokName4 = pm.environment.get(\"polLokName4\");\r",
+							"\r",
+							"pm.test(\"Current pol_lok_name 4 is Correct\", function () {\r",
+							"    pm.expect(json[3].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].transportStatus[3].logisticLocation.locationName).to.eql(polLokName4);\r",
+							"});\r",
+							"\r",
+							"let polLokName5 = pm.environment.get(\"polLokName5\");\r",
+							"\r",
+							"pm.test(\"Current pol_lok_name 5 is Correct\", function () {\r",
+							"    pm.expect(json[4].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].transportStatus[3].logisticLocation.locationName).to.eql(polLokName5);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "3269ea9e-b644-4637-b58c-edea95279a78",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{SH_EV_Password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{SH_EV_User}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/v1/transport_status_notification?externalId={{internalNumber}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"v1",
+						"transport_status_notification"
+					],
+					"query": [
+						{
+							"key": "externalId",
+							"value": "{{internalNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TCR4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c7b948ab-f4dc-40a5-80e8-a7a8e14ea22d",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"let json = pm.response.json();\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "f6b5bf8a-97bd-42bc-b6f1-b6e55f329cdb",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{SH_EV_Password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{SH_EV_User}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/v1/transport_status_notification?externalId={{internalNumber}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"v1",
+						"transport_status_notification"
+					],
+					"query": [
+						{
+							"key": "externalId",
+							"value": "{{internalNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TCR5.1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f9aa7798-3b8b-4a09-abbf-3dfa931c27c1",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"let json = pm.response.json();\r",
+							"\r",
+							"let randomDate = pm.environment.get(\"randomDate\");\r",
+							"\r",
+							"pm.test(\"shipment.empty_pickup_actual of 1 is Correct\", function () {\r",
+							"    pm.expect(json[0].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].transportStatus[1].transportStatusDateTime.substring(0,16)).to.eql(randomDate.substring(0,16))\r",
+							"});\r",
+							"\r",
+							"let randomDate2 = pm.environment.get(\"randomDate2\");\r",
+							"\r",
+							"pm.test(\"shipment.empty_pickup_actual of 2 is Correct\", function () {\r",
+							"    pm.expect(json[1].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].transportStatus[1].transportStatusDateTime.substring(0,16)).to.eql(randomDate2.substring(0,16))\r",
+							"});\r",
+							"\r",
+							"let randomDate3 = pm.environment.get(\"randomDate3\");\r",
+							"\r",
+							"pm.test(\"shipment.empty_pickup_actual of 3 is Correct\", function () {\r",
+							"    pm.expect(json[2].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].transportStatus[1].transportStatusDateTime.substring(0,16)).to.eql(randomDate3.substring(0,16))\r",
+							"});\r",
+							"\r",
+							"let randomDate4 = pm.environment.get(\"randomDate4\");\r",
+							"\r",
+							"pm.test(\"shipment.empty_pickup_actual of 4 is Correct\", function () {\r",
+							"    pm.expect(json[3].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].transportStatus[1].transportStatusDateTime.substring(0,16)).to.eql(randomDate4.substring(0,16))\r",
+							"});\r",
+							"\r",
+							"let randomDate5 = pm.environment.get(\"randomDate5\");\r",
+							"\r",
+							"pm.test(\"shipment.empty_pickup_actual of 5 is Correct\", function () {\r",
+							"    pm.expect(json[4].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].transportStatus[1].transportStatusDateTime.substring(0,16)).to.eql(randomDate5.substring(0,16))\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "ce5e42ac-88e5-4e88-8923-020b969ee19b",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{SH_EV_Password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{SH_EV_User}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/v1/transport_status_notification?externalId={{internalNumber}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"v1",
+						"transport_status_notification"
+					],
+					"query": [
+						{
+							"key": "externalId",
+							"value": "{{internalNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TCR5.2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b4ff8050-a6b6-44be-be9c-e0fcdf16fdfb",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"let json = pm.response.json();\r",
+							"\r",
+							"let randomDeliveryDate = pm.environment.get(\"randomDeliveryDate\");\r",
+							"\r",
+							"pm.test(\"shipment.empty_pickup_actual of 1 is Correct\", function () {\r",
+							"    pm.expect(json[0].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].transportStatus[0].transportStatusDateTime.substring(0,16)).to.eql(randomDeliveryDate.substring(0,16))\r",
+							"});\r",
+							"\r",
+							"let randomDeliveryDate2 = pm.environment.get(\"randomDeliveryDate2\");\r",
+							"\r",
+							"pm.test(\"shipment.empty_pickup_actual of 2 is Correct\", function () {\r",
+							"    pm.expect(json[1].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].transportStatus[0].transportStatusDateTime.substring(0,16)).to.eql(randomDeliveryDate2.substring(0,16))\r",
+							"});\r",
+							"\r",
+							"let randomDeliveryDate3 = pm.environment.get(\"randomDeliveryDate3\");\r",
+							"\r",
+							"pm.test(\"shipment.empty_pickup_actual of 3 is Correct\", function () {\r",
+							"    pm.expect(json[2].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].transportStatus[0].transportStatusDateTime.substring(0,16)).to.eql(randomDeliveryDate3.substring(0,16))\r",
+							"});\r",
+							"\r",
+							"let randomDeliveryDate4 = pm.environment.get(\"randomDeliveryDate4\");\r",
+							"\r",
+							"pm.test(\"shipment.empty_pickup_actual of 4 is Correct\", function () {\r",
+							"    pm.expect(json[3].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].transportStatus[0].transportStatusDateTime.substring(0,16)).to.eql(randomDeliveryDate4.substring(0,16))\r",
+							"});\r",
+							"\r",
+							"let randomDeliveryDate5 = pm.environment.get(\"randomDeliveryDate5\");\r",
+							"\r",
+							"pm.test(\"shipment.empty_pickup_actual of 5 is Correct\", function () {\r",
+							"    pm.expect(json[4].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].transportStatus[0].transportStatusDateTime.substring(0,16)).to.eql(randomDeliveryDate5.substring(0,16))\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "fab60812-48c5-4f63-ab83-82657a7e9b89",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{SH_EV_Password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{SH_EV_User}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/v1/transport_status_notification?externalId={{internalNumber}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"v1",
+						"transport_status_notification"
+					],
+					"query": [
+						{
+							"key": "externalId",
+							"value": "{{internalNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TCR6 shipment.empty_return_planned_last",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "03db0345-8f68-40f6-ae46-8e482b7da3f8",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"let json = pm.response.json();\r",
+							"\r",
+							"let randomPlannedLastDate = pm.environment.get(\"randomPlannedLastDate\");\r",
+							"\r",
+							"pm.test(\"shipment.empty_return_planned_last of 1 is Correct\", function () {\r",
+							"    pm.expect(json[0].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].transportStatus[2].transportStatusDateTime.substring(0,16)).to.eql(randomPlannedLastDate.substring(0,16))\r",
+							"});\r",
+							"\r",
+							"let randomPlannedLastDate2 = pm.environment.get(\"randomPlannedLastDate2\");\r",
+							"\r",
+							"pm.test(\"shipment.empty_return_planned_last of 2 is Correct\", function () {\r",
+							"    pm.expect(json[1].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].transportStatus[2].transportStatusDateTime.substring(0,16)).to.eql(randomPlannedLastDate2.substring(0,16))\r",
+							"});\r",
+							"\r",
+							"let randomPlannedLastDate3 = pm.environment.get(\"randomPlannedLastDate3\");\r",
+							"\r",
+							"pm.test(\"shipment.empty_return_planned_last of 3 is Correct\", function () {\r",
+							"    pm.expect(json[2].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].transportStatus[2].transportStatusDateTime.substring(0,16)).to.eql(randomPlannedLastDate3.substring(0,16))\r",
+							"});\r",
+							"\r",
+							"let randomPlannedLastDate4 = pm.environment.get(\"randomPlannedLastDate4\");\r",
+							"\r",
+							"pm.test(\"shipment.empty_return_planned_last of 4 is Correct\", function () {\r",
+							"    pm.expect(json[3].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].transportStatus[2].transportStatusDateTime.substring(0,16)).to.eql(randomPlannedLastDate4.substring(0,16))\r",
+							"});\r",
+							"\r",
+							"let randomPlannedLastDate5 = pm.environment.get(\"randomPlannedLastDate5\");\r",
+							"\r",
+							"pm.test(\"shipment.empty_return_planned_last of 5 is Correct\", function () {\r",
+							"    pm.expect(json[4].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].transportStatus[2].transportStatusDateTime.substring(0,16)).to.eql(randomPlannedLastDate5.substring(0,16))\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "a85a0201-fbdf-4028-a90e-1d0ddcd036d0",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "1fb0ae9a-d5a3-4786-bb3e-460ec91643d4",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{SH_EV_Password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{SH_EV_User}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/v1/transport_status_notification?externalId={{internalNumber}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"v1",
+						"transport_status_notification"
+					],
+					"query": [
+						{
+							"key": "externalId",
+							"value": "{{internalNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TCR7 event.details.message",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9c0c4fbe-8e61-4db5-bd55-6d9a8dba3b30",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"let json = pm.response.json();\r",
+							"\r",
+							"var detailsMessage1 = pm.environment.get(\"detailsMessage\");\r",
+							"\r",
+							"pm.test(\"Details messege is Correct\", function () {\r",
+							"    pm.expect(json[0].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationShipment.transportStatus.transportStatusReasonDescription).to.eql(detailsMessage1);\r",
+							"});\r",
+							"\r",
+							"var detailsMessage2 = pm.environment.get(\"detailsMessage2\");\r",
+							"\r",
+							"pm.test(\"Details messege2 is Correct\", function () {\r",
+							"    pm.expect(json[1].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationShipment.transportStatus.transportStatusReasonDescription).to.eql(detailsMessage2);\r",
+							"});\r",
+							"\r",
+							"var detailsMessage3 = pm.environment.get(\"detailsMessage3\");\r",
+							"\r",
+							"pm.test(\"Details messege is Correct\", function () {\r",
+							"    pm.expect(json[2].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationShipment.transportStatus.transportStatusReasonDescription).to.eql(detailsMessage3);\r",
+							"});\r",
+							"\r",
+							"var detailsMessage4 = pm.environment.get(\"detailsMessage4\");\r",
+							"\r",
+							"pm.test(\"Details messege4 is Correct\", function () {\r",
+							"    pm.expect(json[3].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationShipment.transportStatus.transportStatusReasonDescription).to.eql(detailsMessage4);\r",
+							"});\r",
+							"\r",
+							"var detailsMessage5 = pm.environment.get(\"detailsMessage5\");\r",
+							"\r",
+							"pm.test(\"Details messege5 is Correct\", function () {\r",
+							"    pm.expect(json[4].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationShipment.transportStatus.transportStatusReasonDescription).to.eql(detailsMessage5);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "a0107452-d595-42f5-9e93-afc683689ab6",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{SH_EV_Password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{SH_EV_User}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/v1/transport_status_notification?externalId={{internalNumber}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"v1",
+						"transport_status_notification"
+					],
+					"query": [
+						{
+							"key": "externalId",
+							"value": "{{internalNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TCR8 shipment.id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c7b948ab-f4dc-40a5-80e8-a7a8e14ea22d",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"let json = pm.response.json();\r",
+							"\r",
+							"let shpId = pm.environment.get(\"shpId\");\r",
+							"\r",
+							"pm.test(\"Shipment ID for 1 is Correct\", function () {\r",
+							"    pm.expect(json[0].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].additionalLogisticUnitIdentification[1].content).to.eql(shpId)\r",
+							"});\r",
+							"\r",
+							"let shpId2 = pm.environment.get(\"shpId2\");\r",
+							"\r",
+							"pm.test(\"Shipment ID for 2 is Correct\", function () {\r",
+							"    pm.expect(json[1].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].additionalLogisticUnitIdentification[1].content).to.eql(shpId2)\r",
+							"});\r",
+							"\r",
+							"let shpId3 = pm.environment.get(\"shpId3\");\r",
+							"\r",
+							"pm.test(\"Shipment ID for 3 is Correct\", function () {\r",
+							"    pm.expect(json[2].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].additionalLogisticUnitIdentification[1].content).to.eql(shpId3)\r",
+							"});\r",
+							"\r",
+							"let shpId4 = pm.environment.get(\"shpId4\");\r",
+							"\r",
+							"pm.test(\"Shipment ID for 4 is Correct\", function () {\r",
+							"    pm.expect(json[3].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].additionalLogisticUnitIdentification[1].content).to.eql(shpId4)\r",
+							"});\r",
+							"\r",
+							"let shpId5 = pm.environment.get(\"shpId5\");\r",
+							"\r",
+							"pm.test(\"Shipment ID for 5 is Correct\", function () {\r",
+							"    pm.expect(json[4].transportStatusNotificationMessage.transportStatusNotification.transportStatusNotificationLogisticUnit[0].additionalLogisticUnitIdentification[1].content).to.eql(shpId5)\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "9fd2c5c7-046e-4b96-93cf-03885baa6968",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{SH_EV_Password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{SH_EV_User}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/v1/transport_status_notification?externalId={{internalNumber}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"v1",
+						"transport_status_notification"
+					],
+					"query": [
+						{
+							"key": "externalId",
+							"value": "{{internalNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"id": "89672fdd-702a-48a1-b459-667ed631f0a7",
+			"key": "internalNumber",
+			"value": ""
+		}
+	]
+}
